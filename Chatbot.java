@@ -110,11 +110,9 @@ public class Chatbot extends JFrame implements ActionListener, Runnable{
     }
 
     public void run() {
-        String line;
         try {
             while(true) {
-                line = dataInputStream.readUTF();
-                taMessages.append(line + "\n");
+                taMessages.append(dataInputStream.readUTF() + "\n");
             }
         } catch(Exception ex) {}
     }
