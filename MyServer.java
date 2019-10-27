@@ -19,11 +19,15 @@ import java.util.List;
  * @author Dell
  */
 public class MyServer {
+
+    public static final int PORT = 3333;
+
     public static List<String> informationUser;
     public static List<String> gender = Arrays.asList("Male","Female");
     public static List<String> color = Arrays.asList("Read","Yellow","Black","green");
+
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(3333);  
+        ServerSocket serverSocket = new ServerSocket(PORT);  
         Socket socket = serverSocket.accept();  
         DataInputStream dataInputStream=new DataInputStream(socket.getInputStream());  
         DataOutputStream dataOutputStream=new DataOutputStream(socket.getOutputStream());  
@@ -38,6 +42,7 @@ public class MyServer {
             System.out.println("Send for client says: "+sendForclinet(getFromClient,count));
             dataOutputStream.flush();  
         }  
+        
         dataInputStream.close();  
         socket.close();  
         serverSocket.close();  
@@ -45,8 +50,7 @@ public class MyServer {
     }
     
     public static String sendForclinet(String getFromClient,int numberSMS) {
-        return getFromClient + "WTF";
-        /*
+
         String sendForClient="";
         switch(numberSMS) {
             case 0:
@@ -65,7 +69,6 @@ public class MyServer {
         }
         
         return sendForClient;
-        */
     }
     
     public static boolean checkCorrectString(String getFromClient,List<String> list) {

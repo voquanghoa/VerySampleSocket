@@ -27,25 +27,31 @@ import javax.swing.JTextField;
  *
  * @author voon.truongvan
  */
-public class Chatbot extends JFrame implements ActionListener{
-    String uname;
-    DataOutputStream dataOutputStream;
-    DataInputStream dataInputStream;
+public class Chatbot extends JFrame implements ActionListener, Runnable{
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    
+    private DataOutputStream dataOutputStream;
+    private DataInputStream dataInputStream;
     JTextArea  taMessages;
     JTextField tfInput;
     JButton btnSend,btnExit;
     Socket client;
     
     public Chatbot(String uname,String servername) throws Exception {
-        super(uname);  // set title for frame
-        this.uname = uname;
-        client  = new Socket(servername,3333);
+        super(uname); 
+
+        client  = new Socket(servername, MyServer.PORT);
         System.out.println("Connected " + client);
+        
         dataInputStream = new DataInputStream(client.getInputStream());
         dataOutputStream = new DataOutputStream(client.getOutputStream());
         send(uname);
         buildInterface();
-        new MessagesThread().start();  // create thread to listen for messages
+
+        new Thread(this).start();
     }
     
     public void buildInterface() {
@@ -84,7 +90,6 @@ public class Chatbot extends JFrame implements ActionListener{
             send("end");
             System.exit(0);
         } else {
-            // send message to server
             send(tfInput.getText());
             tfInput.setText("");
         }
@@ -104,16 +109,13 @@ public class Chatbot extends JFrame implements ActionListener{
         
     }
 
-    class  MessagesThread extends Thread {
-        public void run() {
-            String line;
-            try {
-                while(true) {
-                    line = dataInputStream.readUTF();
-                    taMessages.append(line + "\n");
-                } // end of while
-            } catch(Exception ex) {}
-        }
+    public void run() {
+        String line;
+        try {
+            while(true) {
+                line = dataInputStream.readUTF();
+                taMessages.append(line + "\n");
+            }
+        } catch(Exception ex) {}
     }
-    
 }
